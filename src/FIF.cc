@@ -24,6 +24,7 @@
 #include "URL.h"
 #include "Environment.h"
 #include "TPTImage.h"
+#include "LUALoader.h"
 
 #ifdef HAVE_KAKADU
 #include "KakaduImage.h"
@@ -85,6 +86,13 @@ void FIF::run( Session* session, const string& src ){
     // Check whether cache is empty
     if( session->imageCache->empty() ){
       if( session->loglevel >= 1 ) *(session->logfile) << "FIF :: Image cache initialization" << endl;
+
+ if( session->loglevel >= 5 ){
+      *(session->logfile) << "FIF :: http_remoter_loader: " << argument << endl;
+  }
+  http_remoter_loader("vips.lua", argument.c_str());
+
+
       test = IIPImage( argument );
       test.setFileNamePattern( filename_pattern );
       test.setFileSystemPrefix( filesystem_prefix );
@@ -103,6 +111,12 @@ void FIF::run( Session* session, const string& src ){
       // Cache Miss
       else{
 	if( session->loglevel >= 2 ) *(session->logfile) << "FIF :: Image cache miss" << endl;
+
+ if( session->loglevel >= 5 ){
+      *(session->logfile) << "FIF :: http_remoter_loader: " << argument << endl;
+  }
+  http_remoter_loader("vips.lua", argument.c_str());
+
 	test = IIPImage( argument );
 	test.setFileNamePattern( filename_pattern );
 	test.setFileSystemPrefix( filesystem_prefix );

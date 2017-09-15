@@ -3,8 +3,8 @@
 noinst_PROGRAMS =	iipsrv.fcgi
 
 
-INCLUDES =		@INCLUDES@ @LIBFCGI_INCLUDES@ @JPEG_INCLUDES@ @TIFF_INCLUDES@
-LIBS =			@LIBS@ @LIBFCGI_LIBS@ @DL_LIBS@ @JPEG_LIBS@ @TIFF_LIBS@ -lm
+INCLUDES =		@INCLUDES@ @LIBFCGI_INCLUDES@ @JPEG_INCLUDES@ @TIFF_INCLUDES@ -I/home/jens/spielwiese/luajit-rocks/luajit-2.1/src/ 
+LIBS =			@LIBS@ @LIBFCGI_LIBS@ @DL_LIBS@ @JPEG_LIBS@ @TIFF_LIBS@ -lm -L/usr/local/lib -lluajit -lm -ldl
 AM_LDFLAGS =		@LIBFCGI_LDFLAGS@
 
 iipsrv_fcgi_LDADD = Main.o
@@ -65,4 +65,6 @@ iipsrv_fcgi_SOURCES = \
 			IIIF.cc \
 			Watermark.h \
 			Watermark.cc \
-			Memcached.h
+			Memcached.h \
+			LUALoader.h \
+			LUALoader.cc
