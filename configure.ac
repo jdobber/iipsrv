@@ -334,6 +334,33 @@ fi
 #	AM_CONDITIONAL([ENABLE_PNG], [false])
 #fi
 
+#************************************************************
+# Check for luajit includes and libraries
+#************************************************************
+
+AC_ARG_WITH( luajit-incl,
+   [  --with-luajit-incl=DIR        location of the luajit include files],
+   [LIBLUAJIT_INCLUDES="-I$withval"]
+)
+
+AC_ARG_WITH( luajit-lib,
+   [  --with-luajit-lib=DIR         location of the luajit libraries],
+   [LIBLUAJIT_LDFLAGS="-L$withval"]
+)
+
+LIBLUAJIT_LIBS="-lluajit"
+
+#AC_CHECK_LIB( fcgi, FCGI_Accept,
+#		AC_MSG_RESULT([configure: using system libfcgi]);
+#			LIBFCGI_LIBS="-lfcgi",
+#		AC_MSG_RESULT([configure: unable to find system libfcgi - using bundled version]);
+#			LIBFCGI_INCLUDES="-I../fcgi/include -I../fcgi";
+#			LIBFCGI_LIBS="../fcgi/libfcgi/libfcgi.a"
+#)
+
+AC_SUBST(LIBLUAJIT_INCLUDES)
+AC_SUBST(LIBLUAJIT_LDFLAGS)
+AC_SUBST(LIBLUAJIT_LIBS)
 
 
 #************************************************************
