@@ -3,6 +3,14 @@
 *~
 Makefile
 doc/html
+build
+
+# cmake Files
+CMakeCache.txt
+CMakeFiles/
+cmake
+cmake_install.cmake
+.deps
 
 # Files made by autogen.sh.
 Makefile.in
@@ -16,3 +24,4 @@ Makefile.in
 /ltmain.sh
 /m4/
 /missing
+
