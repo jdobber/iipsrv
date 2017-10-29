@@ -5,12 +5,6 @@ Makefile
 doc/html
 build
 
-# cmake Files
-CMakeCache.txt
-CMakeFiles/
-cmake_install.cmake
-.deps
-
 # Files made by autogen.sh.
 Makefile.in
 /aclocal.m4
