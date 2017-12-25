@@ -1,0 +1,15 @@
+option('with-luajit-incl', 
+    type : 'string', 
+    value : '/usr/include', 
+    description : 'Include path to LUAJIT headers.')
+
+option('with-luajit-lib', 
+    type : 'string', 
+    value : '/usr/lib', 
+    description : 'Include path to LUAJIT libraries.')
+
+option('enable-memcached', 
+    type : 'boolean', 
+    value : false, 
+    description : 'Enable memcached.')
+    
