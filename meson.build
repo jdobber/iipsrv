@@ -3,11 +3,11 @@
 # project
 project('iipsrv', 
 	'cpp', 
-	default_options : ['cpp_std=gnu++14'])
+	default_options : ['cpp_std=c++11'])
 
 success = true
 
-cc_args = ['-Wno-deprecated']
+cc_args = ['-Wno-deprecated', '-pthread']
 
 cc = meson.get_compiler('cpp')
 
@@ -71,6 +71,7 @@ deps = [
     cc.find_library('fcgi', required : true),
     cc.find_library('tiff', required : true),
 	cc.find_library('jpeg', required : true),
+	dependency('threads')
 ]
 
 # time.h
@@ -112,6 +113,11 @@ if get_option('enable-memcached')
 		deps += cc.find_library('memcached', required: true)
 	endif
 endif
+
+# glog
+#if cc.has_header('glog/logging.h')  	
+#	deps += cc.find_library('glog', required: true)
+#endif
 
 # lua
 lua_inc = get_option('with-luajit-incl')

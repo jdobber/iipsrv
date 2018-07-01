@@ -28,6 +28,7 @@
 #include <csignal>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <map>
@@ -60,6 +61,8 @@
 #include <omp.h>
 #endif
 
+#include "spdlog/spdlog.h"
+
 // If necessary, define missing setenv and unsetenv functions
 #ifndef HAVE_SETENV
 static void setenv(char *n, char *v, int x) {
@@ -85,14 +88,14 @@ static void unsetenv(char *env_name) {
 //#define DEBUG 1
 
 using namespace std;
-
-
+namespace spd = spdlog;
 
 /* We need to define some variables globally so that the signal handler
    can have access to them
 */
 int loglevel;
 ofstream logfile;
+ostringstream logger;
 unsigned long IIPcount;
 char *tz = NULL;
 
@@ -126,11 +129,11 @@ void IIPSignalHandler( int signal )
     logfile.close();
   }
 
+  spd::get("iipsrv")->info("Shutting down.");
+  spd::drop_all();
+
   exit( 1 );
 }
-
-
-
 
 
 int main( int argc, char *argv[] )
@@ -143,8 +146,6 @@ int main( int argc, char *argv[] )
   // Define ourselves a version
   string version = string( VERSION );
 
-
-
   /*************************************************
     Initialise some variables from our environment
   *************************************************/
@@ -154,6 +155,11 @@ int main( int argc, char *argv[] )
   //  if we want logging ie loglevel >= 0
 
   loglevel = Environment::getVerbosity();
+  auto my_logger = spd::basic_logger_mt("iipsrv", "/home/jens/tmp/iipsrv2.log");
+  my_logger->set_level(spd::level::debug);
+  my_logger->flush_on(spd::level::debug);
+  my_logger->info("Welcome to spdlog!");
+ 
 
   if( loglevel >= 1 ){
 
@@ -161,6 +167,7 @@ int main( int argc, char *argv[] )
     string lf = Environment::getLogFile();
 
     logfile.open( lf.c_str(), ios::app );
+
     // If we cannot open this, set the loglevel to 0
     if( !logfile ){
       loglevel = 0;
@@ -173,15 +180,17 @@ int main( int argc, char *argv[] )
       time_t current_time = time( NULL );
       char *date = ctime( &current_time );
 
-      logfile << "<----------------------------------->" << endl
+      logger << "<----------------------------------->" << endl
 	      << date << endl
 	      << "IIPImage Server. Version " << version << endl
 	      << "*** Ruven Pillay <ruven@users.sourceforge.net> ***" << endl << endl
 	      << "Verbosity level set to " << loglevel << endl;
+      my_logger->info(logger.str());
     }
 
   }
 
+  
 
   // Set our environment to UTC as all file modification times are GMT,
   // but save our current state to allow us to reset before quitting
@@ -875,6 +884,9 @@ int main( int argc, char *argv[] )
     logfile << endl << "Terminating after " << IIPcount << " iterations" << endl;
     logfile.close();
   }
+
+  spd::get("iipsrv")->info("Shutting down.");
+  spd::drop_all();
 
   return( 0 );
 
