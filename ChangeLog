@@ -1,3 +1,98 @@
+15/01/2019:
+	- Added "bitonal" to list of available qualities in the IIIF info.json file and
+	  replaced use of pow with a faster bitwise shift.
+
+
+09/01/2019:
+	- Added ability to do contrast stretching and histogram equalization via extensions
+	  to the CNT command (CNT=EQ and CNT=ST respectively). Also added new IIP command to
+	  enable color space conversion to greyscale or binary (aka bi-level or bitonal) via
+	  the COL command (COL=grey or COL=binary). Image histogram is calculated once when
+	  needed and saved in the image cache.
+
+
+21/12/2018:
+	- Added fix for rounding error in CVT.cc to avoid garbled last lines in region
+	  requests for very large images.
+
+
+30/11/2018:
+	- Added maxWidth and maxHeight IIIF API 2.1 directives to info.json.
+
+
+13/11/2018:
+	- Converted RawTile dataLength variable to unsigned to improve overflow
+	  avoidance as per https://github.com/ruven/iipsrv/pull/156
+	- Added Visual Studio version check to round() implementation in
+	  windows/Time.cc as now supported in recent versions.
+
+
+12/11/2018:
+	- Refactored image procesing code. Transform functions are now encapsulated
+	  within a struct to allow new processing engines to be more easily added.
+	- Cleanup to Environment.h to remove redundant comparison as readmode is
+	  declared unsigned and can never be less than 0.
+
+
+05/11/2018:
+	- Added codecOptions list to Session class for setting options for the encoders
+	  or decoders. Added KDU_READMODE environment variable for setting the Kakadu
+	  read-mode in KakaduImage.cc. Options are 0 (fast), 1 (fussy) or 2 (resilient).
+
+
+23/07/2018:
+	- Fixed incorrect big endian TIFF file signature.
+
+
+27/04/2018:
+	- Updates to Windows build files: removed Kakadu dependencies.
+	- Added version check for snprintf Windows redefinition as this is now
+	  supported in recent versions of Visual Studio.
+
+
+18/12/2017:
+	- Added missing snprintf definition for Windows in JPEGCompressor.h
+
+
+14/12/2017:
+	- Added the "max" parameter for the size section to the IIIF parser ahead of
+	  deprecation in IIIF version 3.0: http://iiif.io/api/image/2.1/#size
+	- Fixed some spelling mistakes in various files - thanks to Stefan Weil
+
+
+13/12/2017:
+	- Update to configure.ac to fix compilation with Kakadu 7.10
+
+
+28/11/2017:
+	- Modified bilinear interpolation code to avoid risk of unallocated buffer
+	  reads at edges and to use replicated pixels.
+
+
+26/11/2017:
+	- Removed exception specifications from the IIPImage and Compressor class
+	  declarations as well as from their derived classes. Dynamic exception
+	  specifications are deprecated in C++11 onwards. See for rationale and details:
+	  http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3051.html
+
+
+25/11/2017:
+	- Added missing RED, GREEN and BLUE colormap implementations to Transforms.cc
+
+
+24/11/2017:
+	- Added input validation for SPECTRA, PFL and MINMAX commands to avoid
+	  possible access to unmapped memory - thanks to John Heasman at DocuSign.
+
+
+17/11/2017:
+	- Added a check to KakaduImage.cc for zero-sized regions
+
+
+04/10/2017:
+	- Set an upper size limit to ICC profiles accepted for embedding
+
+
 04/08/2017:
 	- Increased JPEG buffer size to handle large markers such as XMP metadata.
 	- XMP metadata size now reported in CVT.cc.
@@ -907,7 +1002,7 @@
 
 
 06/06/2008:
-	- Modifed the way the image dimensions are stored in the IIPImage class.
+	- Modified the way the image dimensions are stored in the IIPImage class.
 	  Rather than simply storing the max size, a vector of available dimensions
 	  is saved making it easier to get the size for a given resolution.
 

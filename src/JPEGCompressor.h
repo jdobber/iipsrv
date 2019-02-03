@@ -1,6 +1,6 @@
 /*  JPEG class wrapper to ijg jpeg library
 
-    Copyright (C) 2000-2017 Ruven Pillay.
+    Copyright (C) 2000-2018 Ruven Pillay.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,6 +26,10 @@
 #include "Compressor.h"
 
 
+// Fix missing snprintf in Windows
+#if _MSC_VER
+#define snprintf _snprintf
+#endif
 
 
 extern "C"{
@@ -57,7 +61,7 @@ typedef iip_destination_mgr * iip_dest_ptr;
 /// Wrapper class to the IJG JPEG library
 
 class JPEGCompressor: public Compressor{
-	
+
  private:
 
   /// the width, height and number of channels per sample for the image
@@ -72,7 +76,7 @@ class JPEGCompressor: public Compressor{
   /// Buffer for the image data
   unsigned char *data;
 
-  /// Size of the JPEG header 
+  /// Size of the JPEG header
   unsigned int header_size;
 
   /// JPEG library objects
@@ -116,24 +120,24 @@ class JPEGCompressor: public Compressor{
       @param strip_height pixel height of the strip we want to compress
       @return header size
    */
-  void InitCompression( const RawTile& rawtile, unsigned int strip_height ) throw (std::string);
+  void InitCompression( const RawTile& rawtile, unsigned int strip_height );
 
   /// Compress a strip of image data
   /** @param s source image data
       @param o output buffer
       @param tile_height pixel height of the tile we are compressing
    */
-  unsigned int CompressStrip( unsigned char* s, unsigned char* o, unsigned int tile_height ) throw (std::string);
+  unsigned int CompressStrip( unsigned char* s, unsigned char* o, unsigned int tile_height );
 
   /// Finish the strip based compression and free memory
   /** @param output output buffer
       @return size of output generated
    */
-  unsigned int Finish( unsigned char* output ) throw (std::string);
+  unsigned int Finish( unsigned char* output );
 
   /// Compress an entire buffer of image data at once in one command
   /** @param t tile of image data */
-  int Compress( RawTile& t ) throw (std::string);
+  unsigned int Compress( RawTile& t );
 
   /// Return the JPEG header size
   inline unsigned int getHeaderSize() { return header_size; }

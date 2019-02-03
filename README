@@ -61,11 +61,11 @@ Optional: libmemcached (for Memcached) and Kakadu or OpenJPEG (for JPEG2000).
 
 Plus, of course, an fcgi-enabled web server. The server has been successfully
 tested on the following servers:
-- Apache (http://httpd.apache.org),
-- Lighttpd (http://www.lighttpd.net)
-- IIS (http://www.iis.net)
-- NginX (http://www.nginx.org)
-- MyServer (http://www.myserverproject.net)
+- [Apache](https://httpd.apache.org)
+- [Lighttpd](https://www.lighttpd.net)
+- [IIS](https://www.iis.net)
+- [NginX](https://nginx.org)
+- [MyServer](http://www.myserverproject.net)
 - Java Application Servers (Tomcat, JBoss)
 
 Example server configurations are shown below.
@@ -186,7 +186,7 @@ cropped to the tile size. If smaller, the watermark will be positioned
 randomly within the available space. The image can be either colour or 
 grayscale.
 
-WATERMARK_PROBABILITY: The probability that a particilar tile will have a watermark
+WATERMARK_PROBABILITY: The probability that a particular tile will have a watermark
 applied to it. 0 means never, 1 means always.
 
 WATERMARK_OPACITY: The opacity (between 0 and 1) applied to the watermark image.
@@ -223,6 +223,9 @@ EMBED_ICC: Set whether the ICC profile is embedded within the output image.
 OMP_NUM_THREADS: Set the number of OpenMP threads to be used by the iipsrv image
 processing routines (See OpenMP specification for details). All available processor
 threads are used by default.
+
+KAKADU_READMODE: Set the Kakadu JPEG2000 read-mode. 0 for 'fast' mode with minimal error checking (default), 1 for 'fussy' mode with no error 
+recovery, 2 for 'resilient' mode with maximum recovery from codestream errors. See the Kakadu documentation for further details.
 
 DECODER_MODULES: Comma separated list of external modules for decoding 
 other image formats. This is only necessary if you have activated 
@@ -490,4 +493,4 @@ For example with lighttpd:
 Please refer to the project site http://iipimage.sourceforge.net for further details
 
 ------------------------------------------------------------------------------------
-(c) 2000-2016 Ruven Pillay <ruven@users.sourceforge.net>
+(c) 2000-2018 Ruven Pillay <ruven@users.sourceforge.net>

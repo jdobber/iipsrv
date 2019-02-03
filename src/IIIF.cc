@@ -2,7 +2,7 @@
 
     IIIF Request Command Handler Class Member Function
 
-    Copyright (C) 2014-2016 Ruven Pillay
+    Copyright (C) 2014-2019 Ruven Pillay
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -181,14 +181,17 @@ void IIIF::run( Session* session, const string& src )
                      << "     { \"width\" : " << (*session->image)->image_widths[numResolutions - 1]
                      << ", \"height\" : " << (*session->image)->image_heights[numResolutions - 1] << " }";
 
+
+    // Need to keep track of maximum allowable image export sizes
+    unsigned int max = session->view->getMaxSize();
+
     for ( int i = numResolutions - 2; i > 0; i-- ){
       unsigned int w = (*session->image)->image_widths[i];
       unsigned int h = (*session->image)->image_heights[i];
-      unsigned int max = session->view->getMaxSize();
       // Only advertise images below our max size value
       if( (max == 0) || (w < max && h < max) ){
-	infoStringStream << "," << endl
-			 << "     { \"width\" : " << w << ", \"height\" : " << h << " }";
+        infoStringStream << "," << endl
+        << "     { \"width\" : " << w << ", \"height\" : " << h << " }";
       }
     }
 
@@ -198,7 +201,7 @@ void IIIF::run( Session* session, const string& src )
                      << ", \"scaleFactors\" : [ 1"; // Scale 1 is original image
 
     for ( unsigned int i = 1; i < numResolutions; i++ ){
-      infoStringStream << ", " << pow(2.0, (double)i);
+      infoStringStream << ", " << (1<<i);
     }
 
     infoStringStream << " ] }" << endl
@@ -206,8 +209,10 @@ void IIIF::run( Session* session, const string& src )
                      << "  \"profile\" : [" << endl
                      << "     \"" << IIIF_PROFILE << "\"," << endl
                      << "     { \"formats\" : [ \"jpg\" ]," << endl
-                     << "       \"qualities\" : [ \"native\",\"color\",\"gray\" ]," << endl
-                     << "       \"supports\" : [\"regionByPct\",\"regionSquare\",\"sizeByForcedWh\",\"sizeByWh\",\"sizeAboveFull\",\"rotationBy90s\",\"mirroring\"] }" << endl
+                     << "       \"qualities\" : [ \"native\",\"color\",\"gray\",\"bitonal\" ]," << endl
+                     << "       \"supports\" : [\"regionByPct\",\"regionSquare\",\"sizeByForcedWh\",\"sizeByWh\",\"sizeAboveFull\",\"rotationBy90s\",\"mirroring\"]," << endl
+		     << "       \"maxWidth\" : " << max << "," << endl
+		     << "       \"maxHeight\" : " << max << "\n     }" << endl
                      << "  ]" << endl
                      << "}";
 
@@ -322,7 +327,8 @@ void IIIF::run( Session* session, const string& src )
 
     }
 
-    // Size Parameter: { "full"; "w,"; ",h"; "pct:n"; "w,h"; "!w,h" }
+    // Size Parameter: { "full/max"; "w,"; ",h"; "pct:n"; "w,h"; "!w,h" }
+    // Note that "full" will be deprecated in favour of "max" in version 3.0
     if ( izer.hasMoreTokens() ){
 
       string sizeString = izer.nextToken();
@@ -334,8 +340,8 @@ void IIIF::run( Session* session, const string& src )
       float ratio = (float)requested_width / (float)requested_height;
       unsigned int max_size = session->view->getMaxSize();
 
-      // "full" request
-      if ( sizeString == "full" ){
+      // "full" or "max" request
+      if ( sizeString == "full" || sizeString == "max" ){
         // No need to do anything
       }
 
@@ -481,6 +487,9 @@ void IIIF::run( Session* session, const string& src )
       }
       else if ( quality == "grey" || quality == "gray" ){
         session->view->colourspace = GREYSCALE;
+      }
+      else if ( quality == "bitonal" ){
+        session->view->colourspace = BINARY;
       }
       else{
         throw invalid_argument( "unsupported quality parameter - must be one of native, color or grey" );

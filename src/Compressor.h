@@ -1,6 +1,6 @@
 /*  Generic compressor class - extended by JPEG and PNG Compressor classes
 
-    Copyright (C) 2017 Ruven Pillay
+    Copyright (C) 2017-2018 Ruven Pillay
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -70,12 +70,12 @@ class Compressor {
 
   /// Return the image header size
   /** @return header size in bytes */
-  virtual unsigned int getHeaderSize() { return 0; }; 
+  virtual unsigned int getHeaderSize() { return 0; };
 
 
   /// Return a pointer to the image header itself
   /** @return binary header blob */
-  virtual unsigned char* getHeader() { return NULL; }; 
+  virtual unsigned char* getHeader() { return NULL; };
 
 
   /// Initialise strip based compression
@@ -85,7 +85,7 @@ class Compressor {
       @param rawtile tile containing the image to be compressed
       @param strip_height pixel height of the strip we want to compress
   */
-  virtual void InitCompression( const RawTile& rawtile, unsigned int strip_height ) throw (std::string) {};
+  virtual void InitCompression( const RawTile& rawtile, unsigned int strip_height ) {};
 
 
   /// Compress a strip of image data
@@ -95,21 +95,21 @@ class Compressor {
       @param tile_height pixel height of the tile we are compressing
       @return number of bytes used for strip
   */
-  virtual unsigned int CompressStrip( unsigned char* s, unsigned char* o, unsigned int tile_height ) throw (std::string) { return 0; };
+  virtual unsigned int CompressStrip( unsigned char* s, unsigned char* o, unsigned int tile_height ) { return 0; };
 
 
   /// Finish the strip based compression and free memory
   /** @param output output buffer
       @return size of output generated in bytes
   */
-  virtual unsigned int Finish( unsigned char* output ) throw (std::string) { return 0; };
+  virtual unsigned int Finish( unsigned char* output ) { return 0; };
 
 
   /// Compress an entire buffer of image data at once in one command
   /** @param t tile of image data
       @return number of bytes used
    */
-  virtual int Compress( RawTile& t ) throw (std::string) { return 0; };
+  virtual unsigned int Compress( RawTile& t ) { return 0; };
 
 
   /// Add metadata to the image header
